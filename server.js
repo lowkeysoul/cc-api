@@ -8,10 +8,10 @@ const db = knex({
   // Enter your own database information here based on what you created
   client: 'pg',
   connection: {
-    host : '127.0.0.1',
-    user : 'aneagoie',
-    password : '',
-    database : 'smart-brain'
+    host: '127.0.0.1',
+    user: 'aneagoie',
+    password: '',
+    database: 'smart-brain'
   }
 });
 
@@ -47,11 +47,11 @@ app.post('/signin', (req, res) => {
 app.post('/register', (req, res) => {
   const { email, name, password } = req.body;
   const hash = bcrypt.hashSync(password);
-    db.transaction(trx => {
-      trx.insert({
-        hash: hash,
-        email: email
-      })
+  db.transaction(trx => {
+    trx.insert({
+      hash: hash,
+      email: email
+    })
       .into('login')
       .returning('email')
       .then(loginEmail => {
@@ -72,13 +72,13 @@ app.post('/register', (req, res) => {
       })
       .then(trx.commit)
       .catch(trx.rollback)
-    })
+  })
     .catch(err => res.status(400).json('unable to register'))
 })
 
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
-  db.select('*').from('users').where({id})
+  db.select('*').from('users').where({ id })
     .then(user => {
       if (user.length) {
         res.json(user[0])
@@ -92,18 +92,18 @@ app.get('/profile/:id', (req, res) => {
 app.put('/image', (req, res) => {
   const { id } = req.body;
   db('users').where('id', '=', id)
-  .increment('entries', 1)
-  .returning('entries')
-  .then(entries => {
-    // If you are using knex.js version 1.0.0 or higher this now returns an array of objects. Therefore, the code goes from:
-    // entries[0] --> this used to return the entries
-    // TO
-    // entries[0].entries --> this now returns the entries
-    res.json(entries[0].entries);
-  })
-  .catch(err => res.status(400).json('unable to get entries'))
+    .increment('entries', 1)
+    .returning('entries')
+    .then(entries => {
+      // If you are using knex.js version 1.0.0 or higher this now returns an array of objects. Therefore, the code goes from:
+      // entries[0] --> this used to return the entries
+      // TO
+      // entries[0].entries --> this now returns the entries
+      res.json(entries[0].entries);
+    })
+    .catch(err => res.status(400).json('unable to get entries'))
 })
 
-app.listen(3000, ()=> {
-  console.log('app is running on port 3000');
+app.listen(3001, () => {
+  console.log('app is running on port 3001');
 })
