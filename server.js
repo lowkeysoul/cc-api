@@ -24,7 +24,7 @@ app.use(express.json()); // latest version of exressJS now comes with Body-Parse
 // app.get('/', (req, res)=> {
 //   res.send(database.users);
 // })
-
+app.get('/', (req, res) => { res.send('It is working!') })
 app.post('/signin', (req, res) => {
   db.select('email', 'hash').from('login')
     .where('email', '=', req.body.email)
